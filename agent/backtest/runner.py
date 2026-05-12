@@ -1563,6 +1563,11 @@ def main(run_dir: Path) -> None:
     if not config.get("frozen_data_manifest"):
         data_map = _maybe_inject_fundamentals_for_factor_panel(data_map, config)
 
+    if source == "auto":
+        config["_run_card_effective_sources"] = sorted(_group_codes_by_source(codes))
+    else:
+        config["_run_card_effective_sources"] = [source]
+
     # Engine
     engine_type = config.get("engine", "daily")
     parameters = config.get("signal_parameters", {})
