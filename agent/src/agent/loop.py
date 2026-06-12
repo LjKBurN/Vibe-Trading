@@ -163,6 +163,37 @@ def _fix_tool_pairs(messages: list) -> None:
         messages.insert(pos, stub)
 
 
+def _attach_tool_call_thought_signatures(message: dict[str, Any], tool_calls: list) -> None:
+    """Attach Gemini thought signatures to replayed assistant tool calls."""
+    outbound_tool_calls = message.get("tool_calls")
+    if not isinstance(outbound_tool_calls, list):
+        return
+
+    signatures_by_id = {
+        tc.id: tc.thought_signature
+        for tc in tool_calls
+        if getattr(tc, "thought_signature", None)
+    }
+    for index, outbound_tool_call in enumerate(outbound_tool_calls):
+        if not isinstance(outbound_tool_call, dict):
+            continue
+        signature = signatures_by_id.get(outbound_tool_call.get("id"))
+        if not signature and index < len(tool_calls):
+            signature = getattr(tool_calls[index], "thought_signature", None)
+        if not signature:
+            continue
+
+        extra_content = outbound_tool_call.get("extra_content")
+        if not isinstance(extra_content, dict):
+            extra_content = {}
+            outbound_tool_call["extra_content"] = extra_content
+        google = extra_content.get("google")
+        if not isinstance(google, dict):
+            google = {}
+            extra_content["google"] = google
+        google["thought_signature"] = signature
+
+
 # -- Structured summary templates ------------------------------------------
 
 _STRUCTURED_SUMMARY_PROMPT = """\
@@ -544,13 +575,13 @@ class AgentLoop:
                     react_trace.append({"type": "answer", "content": final_content[:500]})
                     break
 
-                messages.append(
-                    context.format_assistant_tool_calls(
-                        response.tool_calls,
-                        content=response.content,
-                        reasoning_content=response.reasoning_content or thinking_text or None,
-                    )
+                assistant_message = context.format_assistant_tool_calls(
+                    response.tool_calls,
+                    content=response.content,
+                    reasoning_content=response.reasoning_content or thinking_text or None,
                 )
+                _attach_tool_call_thought_signatures(assistant_message, response.tool_calls)
+                messages.append(assistant_message)
 
                 # Execute tools with read/write batching
                 compact_requested, focus_topic = self._process_tool_calls(
@@ -746,7 +777,7 @@ class AgentLoop:
         for tc in tool_calls:
             args = _normalize_tool_run_dir(tc.arguments, self.memory.run_dir)
             self._emit("tool_call", {"tool": tc.name, "arguments": {k: str(v)[:200] for k, v in args.items()}, "iter": iteration})
-            trace.write({"type": "tool_call", "iter": iteration, "tool": tc.name, "args": {k: str(v)[:200] for k, v in args.items()}})
+            trace.write({"type": "tool_call", "iter": iteration, "tool": tc.name, "call_id": tc.id, "args": {k: str(v)[:200] for k, v in args.items()}})
             runnable.append((tc, args))
 
         # Execute in parallel — each worker gets its own heartbeat + progress emitter.
@@ -791,7 +822,7 @@ class AgentLoop:
         args = _normalize_tool_run_dir(tc.arguments, self.memory.run_dir)
 
         self._emit("tool_call", {"tool": tc.name, "arguments": {k: str(v)[:200] for k, v in args.items()}, "iter": iteration})
-        trace.write({"type": "tool_call", "iter": iteration, "tool": tc.name, "args": {k: str(v)[:200] for k, v in args.items()}})
+        trace.write({"type": "tool_call", "iter": iteration, "tool": tc.name, "call_id": tc.id, "args": {k: str(v)[:200] for k, v in args.items()}})
         logger.info(f"Tool call: {tc.name}({list(args.keys())})")
 
         result, elapsed_ms = self._invoke_tool(tc.name, args)
@@ -870,7 +901,7 @@ class AgentLoop:
         truncated = result[:TOOL_RESULT_LIMIT]
         messages.append(context.format_tool_result(tc.id, tc.name, truncated))
 
-        trace.write({"type": "tool_result", "iter": iteration, "tool": tc.name, "status": status, "elapsed_ms": elapsed_ms, "preview": result[:200]})
+        trace.write({"type": "tool_result", "iter": iteration, "tool": tc.name, "call_id": tc.id, "status": status, "elapsed_ms": elapsed_ms, "preview": result[:200]})
         react_trace.append({"type": "tool_call", "tool": tc.name, "result_preview": result[:200]})
         self._emit("tool_result", {"tool": tc.name, "status": status, "elapsed_ms": elapsed_ms, "preview": result[:200]})
 
