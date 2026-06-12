@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Database, KeyRound, Loader2, RotateCcw, Save, Server, SlidersHorizontal } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { api, isAuthRequiredError, type DataSourceSettings, type LLMProviderOption, type LLMSettings } from "@/lib/api";
 import { getApiAuthKey, setApiAuthKey } from "@/lib/apiAuth";
 
@@ -32,6 +33,7 @@ function toForm(settings: LLMSettings): LLMFormState {
 }
 
 export function Settings() {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<LLMSettings | null>(null);
   const [dataSettings, setDataSettings] = useState<DataSourceSettings | null>(null);
   const [form, setForm] = useState<LLMFormState | null>(null);
@@ -61,8 +63,8 @@ export function Settings() {
         if (isAuthRequiredError(error)) {
           toast.error(message);
         } else {
-          toast.error(`Failed to load LLM settings: ${message}`);
-          toast.error(`Failed to load data source settings: ${message}`);
+          toast.error(t("settings.failedLoadLLM", { error: message }));
+          toast.error(t("settings.failedLoadDataSource", { error: message }));
         }
       })
       .finally(() => {
@@ -102,7 +104,7 @@ export function Settings() {
   const submitLocalApiKey = (event: FormEvent) => {
     event.preventDefault();
     setApiAuthKey(localApiKey);
-    toast.success("Local API key saved");
+    toast.success(t("settings.localApiKeySaved"));
     window.location.reload();
   };
 
@@ -120,9 +122,9 @@ export function Settings() {
       setForm(toForm(updated));
       setApiKey("");
       setClearApiKey(false);
-      toast.success("LLM settings saved");
+      toast.success(t("settings.llmSaved"));
     } catch (error) {
-      toast.error(`Failed to save LLM settings: ${error instanceof Error ? error.message : "Unknown error"}`);
+      toast.error(t("settings.llmSaveFailed", { error: error instanceof Error ? error.message : "Unknown error" }));
     } finally {
       setSaving(false);
     }
@@ -139,9 +141,9 @@ export function Settings() {
       setDataSettings(updated);
       setTushareToken("");
       setClearTushareToken(false);
-      toast.success("Data source settings saved");
+      toast.success(t("settings.dataSourceSaved"));
     } catch (error) {
-      toast.error(`Failed to save data source settings: ${error instanceof Error ? error.message : "Unknown error"}`);
+      toast.error(t("settings.dataSourceSaveFailed", { error: error instanceof Error ? error.message : "Unknown error" }));
     } finally {
       setDataSaving(false);
     }
@@ -152,19 +154,19 @@ export function Settings() {
       <div className="mb-4 space-y-1">
         <div className="flex items-center gap-2">
           <KeyRound className="h-4 w-4 text-primary" />
-          <h2 className="text-base font-semibold">{"Local API access"}</h2>
+          <h2 className="text-base font-semibold">{t("settings.localApiAccess")}</h2>
         </div>
-        <p className="text-sm text-muted-foreground">{"For remote or private Web UI deployments, enter the server API key once in this browser. Localhost use can stay blank."}</p>
+        <p className="text-sm text-muted-foreground">{t("settings.localApiAccessDesc")}</p>
       </div>
       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
         <label className="grid gap-2">
-          <span className={labelClass}>{"Server API key"}</span>
+          <span className={labelClass}>{t("settings.serverApiKey")}</span>
           <input
             type="password"
             value={localApiKey}
             onChange={(event) => setLocalApiKeyState(event.target.value)}
             className={fieldClass}
-            placeholder={"Stored only in this browser. Leave blank to clear it."}
+            placeholder={t("settings.serverApiKeyPlaceholder")}
             autoComplete="current-password"
           />
         </label>
@@ -173,10 +175,10 @@ export function Settings() {
           className="inline-flex items-center justify-center gap-2 self-end rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
         >
           <Save className="h-4 w-4" />
-          {"Save local key"}
+          {t("settings.saveLocalKey")}
         </button>
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">{"Stored only in this browser. Leave blank to clear it."}</p>
+      <p className="mt-2 text-xs text-muted-foreground">{t("settings.storedInBrowser")}</p>
     </form>
   );
 
@@ -184,20 +186,20 @@ export function Settings() {
     return (
       <div className="mx-auto max-w-5xl space-y-6 p-6">
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">{"Settings"}</h1>
-          <p className="max-w-3xl text-sm text-muted-foreground">{"Configure model credentials and market data source tokens for this local project."}</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("settings.title")}</h1>
+          <p className="max-w-3xl text-sm text-muted-foreground">{t("settings.desc")}</p>
         </div>
         {localApiAccessSection}
         <div className="flex min-h-32 items-center justify-center rounded-lg border bg-card p-5 text-sm text-muted-foreground">
           {settingsLoadError ? (
             <div className="text-center">
-              <div className="font-medium text-foreground">{"Settings are unavailable"}</div>
+              <div className="font-medium text-foreground">{t("settings.unavailable")}</div>
               <div className="mt-1">{settingsLoadError}</div>
             </div>
           ) : (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {"Loading..."}
+              {t("settings.loading")}
             </>
           )}
         </div>
@@ -206,41 +208,41 @@ export function Settings() {
   }
 
   const keyStatus = settings.api_key_configured
-    ? "Configured"
+    ? t("settings.configured")
     : settings.api_key_required
-      ? "Leave blank to keep the current key"
+      ? t("settings.keepCurrentKey")
       : selectedProvider?.auth_type === "oauth" && selectedProvider.login_command
-        ? `This provider uses OAuth. Run: ${selectedProvider.login_command}`
-        : "This provider does not require an API key.";
+        ? t("settings.oauthHint", { command: selectedProvider.login_command })
+        : t("settings.noApiKeyNeeded");
   const apiKeyDisabled = !selectedProvider?.api_key_required || clearApiKey;
   const tushareStatus = dataSettings.tushare_token_configured
-    ? "Configured"
-    : "Leave blank to keep the current token";
+    ? t("settings.configured")
+    : t("settings.keepCurrentKey");
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">{"Settings"}</h1>
-        <p className="max-w-3xl text-sm text-muted-foreground">{"Configure model credentials and market data source tokens for this local project."}</p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("settings.title")}</h1>
+        <p className="max-w-3xl text-sm text-muted-foreground">{t("settings.desc")}</p>
       </div>
 
       {localApiAccessSection}
 
       <div className="space-y-2">
-        <h2 className="text-lg font-semibold tracking-tight">{"LLM Settings"}</h2>
-        <p className="max-w-3xl text-sm text-muted-foreground">{"Choose the model used by the agent and save it to the project-local agent/.env file."}</p>
+        <h2 className="text-lg font-semibold tracking-tight">{t("settings.llmSettings")}</h2>
+        <p className="max-w-3xl text-sm text-muted-foreground">{t("settings.llmSettingsDesc")}</p>
       </div>
 
       <form onSubmit={submit} className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.8fr)]">
         <section className="rounded-lg border bg-card p-5 shadow-sm">
           <div className="mb-5 flex items-center gap-2">
             <Server className="h-4 w-4 text-primary" />
-            <h2 className="text-base font-semibold">{"Connection"}</h2>
+            <h2 className="text-base font-semibold">{t("settings.connection")}</h2>
           </div>
 
           <div className="grid gap-4">
             <label className="grid gap-2">
-              <span className={labelClass}>{"Provider"}</span>
+              <span className={labelClass}>{t("settings.provider")}</span>
               <select
                 value={form.provider}
                 onChange={(event) => onProviderChange(event.target.value)}
@@ -250,11 +252,11 @@ export function Settings() {
                   <option key={provider.name} value={provider.name}>{provider.label}</option>
                 ))}
               </select>
-              <span className={hintClass}>{"Changing providers updates the recommended model and endpoint."}</span>
+              <span className={hintClass}>{t("settings.providerHint")}</span>
             </label>
 
             <label className="grid gap-2">
-              <span className={labelClass}>{"Model"}</span>
+              <span className={labelClass}>{t("settings.model")}</span>
               <div className="flex gap-2">
                 <input
                   value={form.model_name}
@@ -266,17 +268,17 @@ export function Settings() {
                   type="button"
                   onClick={() => applyProviderDefaults()}
                   className="inline-flex shrink-0 items-center gap-2 rounded-md border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
-                  title={"Use provider defaults"}
+                  title={t("settings.useProviderDefaults")}
                 >
                   <RotateCcw className="h-4 w-4" />
-                  <span className="hidden sm:inline">{"Use provider defaults"}</span>
+                  <span className="hidden sm:inline">{t("settings.useProviderDefaults")}</span>
                 </button>
               </div>
-              <span className={hintClass}>{"Use the exact model id required by your provider."}</span>
+              <span className={hintClass}>{t("settings.modelHint")}</span>
             </label>
 
             <label className="grid gap-2">
-              <span className={labelClass}>{"Base URL"}</span>
+              <span className={labelClass}>{t("settings.baseUrl")}</span>
               <input
                 value={form.base_url}
                 onChange={(event) => setForm({ ...form, base_url: event.target.value })}
@@ -288,7 +290,7 @@ export function Settings() {
 
             <label className="grid gap-2">
               <span className={labelClass}>
-                {selectedProvider?.auth_type === "oauth" ? "OAuth" : "API key"}
+                {selectedProvider?.auth_type === "oauth" ? t("settings.oauth") : t("settings.apiKey")}
               </span>
               <div className="relative">
                 <KeyRound className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -315,7 +317,7 @@ export function Settings() {
                       }}
                       className="h-3.5 w-3.5 accent-primary"
                     />
-                    {"Clear saved API key"}
+                    {t("settings.clearApiKey")}
                   </label>
                 ) : null}
               </div>
@@ -326,12 +328,12 @@ export function Settings() {
         <section className="rounded-lg border bg-card p-5 shadow-sm">
           <div className="mb-5 flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 text-primary" />
-            <h2 className="text-base font-semibold">{"Generation"}</h2>
+            <h2 className="text-base font-semibold">{t("settings.generation")}</h2>
           </div>
 
           <div className="grid gap-4">
             <label className="grid gap-2">
-              <span className={labelClass}>{"Temperature"}</span>
+              <span className={labelClass}>{t("settings.temperature")}</span>
               <input
                 type="number"
                 min={0}
@@ -344,7 +346,7 @@ export function Settings() {
             </label>
 
             <label className="grid gap-2">
-              <span className={labelClass}>{"Timeout seconds"}</span>
+              <span className={labelClass}>{t("settings.timeoutSeconds")}</span>
               <input
                 type="number"
                 min={1}
@@ -357,7 +359,7 @@ export function Settings() {
             </label>
 
             <label className="grid gap-2">
-              <span className={labelClass}>{"Max retries"}</span>
+              <span className={labelClass}>{t("settings.maxRetries")}</span>
               <input
                 type="number"
                 min={0}
@@ -370,23 +372,23 @@ export function Settings() {
             </label>
 
             <label className="grid gap-2">
-              <span className={labelClass}>{"Reasoning effort"}</span>
+              <span className={labelClass}>{t("settings.reasoningEffort")}</span>
               <select
                 value={form.reasoning_effort}
                 onChange={(event) => setForm({ ...form, reasoning_effort: event.target.value })}
                 className={fieldClass}
               >
-                <option value="">{"Off"}</option>
+                <option value="">{t("settings.reasoningOff")}</option>
                 <option value="low">low</option>
                 <option value="medium">medium</option>
                 <option value="high">high</option>
                 <option value="max">max</option>
               </select>
-              <span className={hintClass}>{"How hard the model thinks before answering. Higher is more thorough but slower; leave Off for fastest replies."}</span>
+              <span className={hintClass}>{t("settings.reasoningHint")}</span>
             </label>
 
             <div className="rounded-md border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">{"Saved to"}: </span>
+              <span className="font-medium text-foreground">{t("settings.savedTo")}: </span>
               <span className="break-all font-mono">{settings.env_path}</span>
             </div>
 
@@ -396,7 +398,7 @@ export function Settings() {
               className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              {saving ? "Saving..." : "Save settings"}
+              {saving ? t("settings.saving") : t("settings.saveSettings")}
             </button>
           </div>
         </section>
@@ -406,15 +408,15 @@ export function Settings() {
         <div className="mb-5 space-y-1">
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4 text-primary" />
-            <h2 className="text-base font-semibold">{"Data Source Settings"}</h2>
+            <h2 className="text-base font-semibold">{t("settings.dataSourceSettings")}</h2>
           </div>
-          <p className="text-sm text-muted-foreground">{"Configure optional market data credentials used by backtests and research agents."}</p>
+          <p className="text-sm text-muted-foreground">{t("settings.dataSourceDesc")}</p>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
           <div className="grid gap-4">
             <label className="grid gap-2">
-              <span className={labelClass}>{"Tushare token"}</span>
+              <span className={labelClass}>{t("settings.tushareToken")}</span>
               <div className="relative">
                 <KeyRound className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <input
@@ -428,7 +430,7 @@ export function Settings() {
                 />
               </div>
               <div className="flex items-center justify-between gap-3">
-                <span className={hintClass}>{"Used for China A-share, futures, fund, and macro data. If unset, the project falls back to AKShare where available."}</span>
+                <span className={hintClass}>{t("settings.tushareHint")}</span>
                 <label className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
                   <input
                     type="checkbox"
@@ -439,13 +441,13 @@ export function Settings() {
                     }}
                     className="h-3.5 w-3.5 accent-primary"
                   />
-                  {"Clear saved Tushare token"}
+                  {t("settings.clearTushareToken")}
                 </label>
               </div>
             </label>
 
             <div className="rounded-md border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">{"Saved to"}: </span>
+              <span className="font-medium text-foreground">{t("settings.savedTo")}: </span>
               <span className="break-all font-mono">{dataSettings.env_path}</span>
             </div>
 
@@ -455,23 +457,23 @@ export function Settings() {
               className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {dataSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              {dataSaving ? "Saving..." : "Save data source settings"}
+              {dataSaving ? t("settings.saving") : t("settings.saveDataSource")}
             </button>
           </div>
 
           <div className="rounded-md border bg-muted/20 p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <span className="text-sm font-medium">{"BaoStock"}</span>
+              <span className="text-sm font-medium">{t("settings.baoStock")}</span>
               <span className={`rounded-full px-2 py-0.5 text-xs ${dataSettings.baostock_supported ? "bg-success/10 text-success" : "bg-warning/10 text-warning"}`}>
-                {dataSettings.baostock_supported ? "Loader available" : "No project loader"}
+                {dataSettings.baostock_supported ? t("settings.loaderAvailable") : t("settings.noProjectLoader")}
               </span>
             </div>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>{dataSettings.baostock_message}</p>
               <p>
                 {dataSettings.baostock_installed
-                  ? "Python package installed"
-                  : "Python package not installed"}
+                  ? t("settings.packageInstalled")
+                  : t("settings.packageNotInstalled")}
               </p>
             </div>
           </div>

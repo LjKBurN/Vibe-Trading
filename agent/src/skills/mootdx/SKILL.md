@@ -71,7 +71,7 @@ df_15m = client.bars(symbol="600519", frequency=1, offset=800)
 
 ## Built-in Loader
 
-`backtest/loaders/mootdx_loader.py` is registered as the `mootdx` source. Fallback chain for `a_share` is `[tushare, mootdx, akshare]` — tushare wins when a token is present; mootdx wins when no token but TCP egress works; akshare is the broadest fallback.
+`backtest/loaders/mootdx_loader.py` is registered as the `mootdx` source. Fallback chain for `a_share` is `[astock, mootdx, akshare]` — astock (mootdx TCP + Tencent fundamentals) is primary; mootdx is the TCP-only fallback; akshare is the broadest fallback.
 
 ```python
 from backtest.runner import run

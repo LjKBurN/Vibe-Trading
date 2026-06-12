@@ -158,6 +158,26 @@ export const api = {
   alphaBenchStreamUrl: (jobId: string) =>
     withAuthQuery(`${BASE}/alpha/bench/${encodeURIComponent(jobId)}/stream`),
 
+  // Screener API
+  screenAShares: (params: ScreenerParams = {}) => {
+    const q = new URLSearchParams();
+    if (params.market) q.set("market", params.market);
+    if (params.mcap_min !== undefined) q.set("mcap_min", String(params.mcap_min));
+    if (params.mcap_max !== undefined) q.set("mcap_max", String(params.mcap_max));
+    if (params.pe_min !== undefined) q.set("pe_min", String(params.pe_min));
+    if (params.pe_max !== undefined) q.set("pe_max", String(params.pe_max));
+    if (params.pb_min !== undefined) q.set("pb_min", String(params.pb_min));
+    if (params.pb_max !== undefined) q.set("pb_max", String(params.pb_max));
+    if (params.volume_min !== undefined) q.set("volume_min", String(params.volume_min));
+    if (params.exclude_st !== undefined) q.set("exclude_st", String(params.exclude_st));
+    if (params.sort_by) q.set("sort_by", params.sort_by);
+    if (params.sort_order) q.set("sort_order", params.sort_order);
+    if (params.page !== undefined) q.set("page", String(params.page));
+    if (params.page_size !== undefined) q.set("page_size", String(params.page_size));
+    const qs = q.toString();
+    return request<ScreenerResponse>(`/screener/ashare${qs ? `?${qs}` : ""}`);
+  },
+
   // Connector runtime channel — privileged surface actions (NOT agent tools).
   // commit is the ONLY action that writes a mandate; halt trips the kill switch.
   commitMandate: (body: CommitMandateRequest) =>
@@ -862,4 +882,42 @@ export interface MessageItem {
   created_at: string;
   linked_attempt_id?: string;
   metadata?: Record<string, unknown>;
+}
+
+// --- Screener types ---
+
+export interface ScreenerParams {
+  market?: string;
+  mcap_min?: number;
+  mcap_max?: number;
+  pe_min?: number;
+  pe_max?: number;
+  pb_min?: number;
+  pb_max?: number;
+  volume_min?: number;
+  exclude_st?: boolean;
+  sort_by?: string;
+  sort_order?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export interface ScreenerStock {
+  code: string;
+  name: string;
+  close: number | null;
+  pct_change: number | null;
+  market_cap: number | null;
+  pe: number | null;
+  pb: number | null;
+  volume: number | null;
+  turnover_rate: number | null;
+}
+
+export interface ScreenerResponse {
+  status: string;
+  total: number;
+  page: number;
+  page_size: number;
+  stocks: ScreenerStock[];
 }

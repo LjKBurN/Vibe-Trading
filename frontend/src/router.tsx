@@ -1,5 +1,6 @@
 import { Suspense, lazy, type ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/layout/Layout";
 
 const Home = lazy(() => import("@/pages/Home").then((m) => ({ default: m.Home })));
@@ -19,11 +20,15 @@ const Correlation = lazy(() =>
 const AlphaZoo = lazy(() =>
   import("@/pages/AlphaZoo").then((m) => ({ default: m.AlphaZoo })),
 );
+const Screener = lazy(() =>
+  import("@/pages/Screener").then((m) => ({ default: m.Screener })),
+);
 
 function PageLoader() {
+  const { t } = useTranslation();
   return (
     <div className="flex h-[60vh] items-center justify-center text-muted-foreground">
-      Loading…
+      {t("router.loading")}
     </div>
   );
 }
@@ -47,6 +52,7 @@ export const router = createBrowserRouter([
       { path: "/compare", element: wrap(Compare) },
       { path: "/correlation", element: wrap(Correlation) },
       { path: "/alpha-zoo", element: wrap(AlphaZoo) },
+      { path: "/screener", element: wrap(Screener) },
       { path: "/alpha-zoo/bench", element: wrap(AlphaZoo) },
       { path: "/alpha-zoo/:alphaId", element: wrap(AlphaZoo) },
     ],

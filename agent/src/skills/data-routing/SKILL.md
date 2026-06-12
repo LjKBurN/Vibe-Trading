@@ -8,6 +8,7 @@ description: Data source selection decision tree. Load this skill BEFORE any bac
 
 | Source | Markets | Auth Required | Network | Skill |
 |--------|---------|---------------|---------|-------|
+| astock | A-shares (primary) | No | Tencent + mootdx TCP | a-stock-data |
 | tushare | A-shares, funds, futures, macro | Yes (`TUSHARE_TOKEN`) | China network | tushare |
 | akshare | A-shares, US, HK, futures, macro, forex | No | Unrestricted | akshare |
 | yfinance | US stocks, HK stocks, ETFs | No | Needs Yahoo Finance access | yfinance |
@@ -27,7 +28,7 @@ You do NOT need to specify a concrete data source in config.json unless the user
 1. Identify the market type from the user's request
 2. Pick the source by priority:
 
-**A-shares**: tushare (if TUSHARE_TOKEN is set) > akshare (free fallback)
+**A-shares**: astock (free, no IP blocking) > mootdx (TCP fallback) > akshare (broadest fallback)
 **US stocks**: yfinance > akshare
 **HK stocks**: yfinance > akshare
 **Crypto**: okx (single exchange) > ccxt (multi-exchange)
@@ -35,10 +36,11 @@ You do NOT need to specify a concrete data source in config.json unless the user
 **Macro / economics**: akshare > tushare
 **Forex**: akshare > yfinance
 
-3. Load the corresponding skill for API details: `load_skill("akshare")`
+3. Load the corresponding skill for API details: `load_skill("a-stock-data")` or `load_skill("akshare")`
 
 ### Availability Check
 
+- **astock / mootdx**: free, no IP blocking (Tencent HTTP + mootdx TCP)
 - **tushare**: check if `TUSHARE_TOKEN` environment variable exists
 - **yfinance / okx / ccxt / akshare**: free but may have network restrictions
 - If the user reports "connection timeout" or "cannot access", switch to the same-market fallback
@@ -61,8 +63,7 @@ The backtest runner implements automatic fallback at the market level:
 ```
 User requests 000001.SZ (A-share)
   -> detect market: a_share
-  -> try tushare: TUSHARE_TOKEN missing -> skip
-  -> try akshare: available -> use akshare
+  -> try astock: mootdx installed -> use astock (mootdx TCP + Tencent fundamentals)
   -> success (zero config required)
 ```
 

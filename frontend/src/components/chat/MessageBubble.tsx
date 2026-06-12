@@ -1,5 +1,6 @@
 import { memo, useState, useCallback } from "react";
 import { User, XCircle, RefreshCw, Copy, Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -12,6 +13,7 @@ const remarkPlugins = [remarkGfm];
 const rehypePlugins = [rehypeHighlight];
 
 function CopyButton({ text }: { text: string }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(text).then(() => {
@@ -23,22 +25,22 @@ function CopyButton({ text }: { text: string }) {
     <button
       onClick={handleCopy}
       className="absolute top-2 right-2 p-1.5 rounded-md bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-      title={copied ? "Copied" : "Copy"}
+      title={copied ? t("message.copied") : t("message.copy")}
     >
       {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
     </button>
   );
 }
 
-function getRetryHint(content: string): string {
+function getRetryHint(content: string, t: (key: string) => string): string {
   const lower = content.toLowerCase();
   if (lower.includes("timeout") || lower.includes("timed out")) {
-    return "Execution timed out. Try simplifying the strategy or reducing the number of assets.";
+    return t("message.retryTimeout");
   }
   if (lower.includes("api") || lower.includes("rate limit") || lower.includes("429") || lower.includes("500") || lower.includes("502") || lower.includes("503")) {
-    return "API call failed. Please retry later.";
+    return t("message.retryApi");
   }
-  return "Execution failed. Click to retry.";
+  return t("message.retryGeneric");
 }
 
 interface Props {
@@ -47,6 +49,7 @@ interface Props {
 }
 
 export const MessageBubble = memo(function MessageBubble({ msg, onRetry }: Props) {
+  const { t } = useTranslation();
   const ts = msg.timestamp ? formatTimestamp(msg.timestamp) : null;
 
   if (msg.type === "user") {
@@ -83,7 +86,7 @@ export const MessageBubble = memo(function MessageBubble({ msg, onRetry }: Props
   }
 
   if (msg.type === "error") {
-    const hint = getRetryHint(msg.content);
+    const hint = getRetryHint(msg.content, t);
     return (
       <div className="flex gap-3">
         <AgentAvatar />

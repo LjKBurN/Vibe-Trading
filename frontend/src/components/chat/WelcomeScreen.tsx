@@ -1,4 +1,5 @@
-﻿import { Bot, TrendingUp, Globe, Sparkles, Users, UserCircle2, NotebookPen, Landmark } from "lucide-react";
+import { Bot, TrendingUp, Globe, Sparkles, Users, UserCircle2, NotebookPen, Landmark } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Example {
   title: string;
@@ -7,7 +8,7 @@ interface Example {
 }
 
 interface Category {
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
   color: string;
   examples: Example[];
@@ -15,7 +16,7 @@ interface Category {
 
 const CATEGORIES: Category[] = [
   {
-    label: "Multi-Market Backtest",
+    labelKey: "welcome.catBacktest",
     icon: <TrendingUp className="h-4 w-4" />,
     color: "text-red-400 border-red-500/30 hover:border-red-500/60 hover:bg-red-500/5",
     examples: [
@@ -37,7 +38,7 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    label: "Research & Analysis",
+    labelKey: "welcome.catResearch",
     icon: <Sparkles className="h-4 w-4" />,
     color: "text-amber-400 border-amber-500/30 hover:border-amber-500/60 hover:bg-amber-500/5",
     examples: [
@@ -54,7 +55,7 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    label: "Swarm Teams",
+    labelKey: "welcome.catSwarm",
     icon: <Users className="h-4 w-4" />,
     color: "text-violet-400 border-violet-500/30 hover:border-violet-500/60 hover:bg-violet-500/5",
     examples: [
@@ -65,13 +66,13 @@ const CATEGORIES: Category[] = [
       },
       {
         title: "Quant Strategy Desk",
-        desc: "Screening → factor research → backtest → risk audit pipeline",
+        desc: "Screening \u2192 factor research \u2192 backtest \u2192 risk audit pipeline",
         prompt: "[Swarm Team Mode] Use the quant_strategy_desk preset to find and backtest the best momentum strategy on CSI 300 constituents",
       },
     ],
   },
   {
-    label: "Document & Web Research",
+    labelKey: "welcome.catDocument",
     icon: <Globe className="h-4 w-4" />,
     color: "text-blue-400 border-blue-500/30 hover:border-blue-500/60 hover:bg-blue-500/5",
     examples: [
@@ -88,24 +89,24 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    label: "Trade Journal",
+    labelKey: "welcome.catJournal",
     icon: <NotebookPen className="h-4 w-4" />,
     color: "text-orange-400 border-orange-500/30 hover:border-orange-500/60 hover:bg-orange-500/5",
     examples: [
       {
         title: "Analyze My Broker Export",
-        desc: "Parse 同花顺/东财/富途/generic CSV — holding days, win rate, PnL ratio, hourly distribution",
-        prompt: "Analyze the trade journal I just uploaded — full profile with holding stats, win rate, top symbols, and hourly distribution",
+        desc: "Parse \u540C\u82B1\u987A/\u4E1C\u8D22/\u5BCC\u9014/generic CSV \u2014 holding days, win rate, PnL ratio, hourly distribution",
+        prompt: "Analyze the trade journal I just uploaded \u2014 full profile with holding stats, win rate, top symbols, and hourly distribution",
       },
       {
         title: "Diagnose My Behavior Biases",
-        desc: "Disposition effect, overtrading, chasing momentum, anchoring — severity + numeric evidence",
+        desc: "Disposition effect, overtrading, chasing momentum, anchoring \u2014 severity + numeric evidence",
         prompt: "Run the 4 behavior diagnostics on my trade journal (disposition, overtrading, chasing, anchoring) and tell me which bias hurts my PnL most",
       },
     ],
   },
   {
-    label: "Trading Connectors",
+    labelKey: "welcome.catConnector",
     icon: <Landmark className="h-4 w-4" />,
     color: "text-cyan-400 border-cyan-500/30 hover:border-cyan-500/60 hover:bg-cyan-500/5",
     examples: [
@@ -127,14 +128,14 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    label: "Shadow Account",
+    labelKey: "welcome.catShadow",
     icon: <UserCircle2 className="h-4 w-4" />,
     color: "text-emerald-400 border-emerald-500/30 hover:border-emerald-500/60 hover:bg-emerald-500/5",
     examples: [
       {
         title: "Train My Shadow from Journal",
         desc: "Extract your strategy rules from a broker CSV and persist a Shadow profile",
-        prompt: "Train my shadow account from the trading journal I just uploaded — show the extracted rules and confirm they look like my behavior",
+        prompt: "Train my shadow account from the trading journal I just uploaded \u2014 show the extracted rules and confirm they look like my behavior",
       },
       {
         title: "How Much Am I Leaving on the Table?",
@@ -143,29 +144,29 @@ const CATEGORIES: Category[] = [
       },
       {
         title: "Generate Shadow Report",
-        desc: "8-section HTML/PDF — equity curve, per-market Sharpe, attribution waterfall",
-        prompt: "Render the shadow report and give me the URL — lead with the you-vs-shadow delta",
+        desc: "8-section HTML/PDF \u2014 equity curve, per-market Sharpe, attribution waterfall",
+        prompt: "Render the shadow report and give me the URL \u2014 lead with the you-vs-shadow delta",
       },
     ],
   },
 ];
 
-const CAPABILITY_CHIPS = [
-  "Finance Skills Library",
-  "Swarm Agent Teams",
-  "Auto-Discovered Tools",
-  "3 Markets: A-Share · Crypto · HK/US",
-  "Trading Connector Profiles",
-  "Minute to Daily Timeframes",
-  "4 Portfolio Optimizers",
-  "15+ Risk Metrics",
-  "Options & Derivatives",
-  "PDF & Web Research",
-  "Factor Analysis & ML",
-  "Trade Journal Analyzer",
-  "Shadow Account Backtest",
-  "Persistent Memory",
-  "Session Search",
+const CHIP_KEYS = [
+  "welcome.chipSkills",
+  "welcome.chipSwarm",
+  "welcome.chipTools",
+  "welcome.chipMarkets",
+  "welcome.chipConnectors",
+  "welcome.chipTimeframes",
+  "welcome.chipOptimizers",
+  "welcome.chipRisk",
+  "welcome.chipOptions",
+  "welcome.chipPdf",
+  "welcome.chipFactor",
+  "welcome.chipJournal",
+  "welcome.chipShadow",
+  "welcome.chipMemory",
+  "welcome.chipSearch",
 ];
 
 interface Props {
@@ -173,6 +174,8 @@ interface Props {
 }
 
 export function WelcomeScreen({ onExample }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8 text-center">
       {/* Header */}
@@ -181,37 +184,37 @@ export function WelcomeScreen({ onExample }: Props) {
           <Bot className="h-8 w-8 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Vibe-Trading</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t("welcome.title")}</h2>
           <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto leading-relaxed">
-            vibe trading with your professional financial agent team
+            {t("welcome.subtitle")}
           </p>
           <p className="text-sm text-muted-foreground mt-2 max-w-md leading-relaxed mx-auto">
-            Describe a trading strategy to get started.
+            {t("welcome.hint")}
           </p>
         </div>
       </div>
 
       {/* Capability chips */}
       <div className="flex flex-wrap justify-center gap-2 max-w-lg">
-        {CAPABILITY_CHIPS.map((chip) => (
+        {CHIP_KEYS.map((key) => (
           <span
-            key={chip}
+            key={key}
             className="px-2.5 py-1 text-xs rounded-full border border-border/60 text-muted-foreground bg-muted/30"
           >
-            {chip}
+            {t(key)}
           </span>
         ))}
       </div>
 
       {/* Example categories grid */}
       <div className="w-full max-w-2xl text-left space-y-4">
-        <p className="text-xs text-muted-foreground px-1">Try an example:</p>
+        <p className="text-xs text-muted-foreground px-1">{t("welcome.tryExample")}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {CATEGORIES.map((cat) => (
-            <div key={cat.label} className="space-y-2">
+            <div key={cat.labelKey} className="space-y-2">
               <div className={`flex items-center gap-1.5 text-xs font-medium px-1 ${cat.color.split(" ").filter(c => c.startsWith("text-")).join(" ")}`}>
                 {cat.icon}
-                <span>{cat.label}</span>
+                <span>{t(cat.labelKey)}</span>
               </div>
               <div className="space-y-1.5">
                 {cat.examples.map((ex) => (

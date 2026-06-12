@@ -181,13 +181,20 @@ def _ensure_dotenv() -> None:
     # P08 R1: one-time, behavior-preserving diagnostic so a stale or
     # shadowed .env is observable instead of costing hours. The path is
     # redacted to a symbolic slot label and the API key is never logged.
-    logger.info(
-        "dotenv resolved from %s | provider=%s model=%s base=%s",
-        _redact_env_source(loaded),
-        os.getenv("LANGCHAIN_PROVIDER", "(unset)"),
-        os.getenv("LANGCHAIN_MODEL_NAME", "(unset)"),
-        _redact_base_url_for_log(os.getenv("OPENAI_BASE_URL") or os.getenv("OPENAI_API_BASE")),
-    )
+    provider = os.getenv("LANGCHAIN_PROVIDER", "(unset)")
+    model = os.getenv("LANGCHAIN_MODEL_NAME", "(unset)")
+    # Show the provider-specific base URL (not just OPENAI_BASE_URL)
+    _PROVIDER_MAP_PREVIEW = {
+        "openai": "OPENAI_BASE_URL", "openrouter": "OPENROUTER_BASE_URL",
+        "deepseek": "DEEPSEEK_BASE_URL", "gemini": "GEMINI_BASE_URL",
+        "groq": "GROQ_BASE_URL", "dashscope": "DASHSCOPE_BASE_URL",
+        "qwen": "DASHSCOPE_BASE_URL", "zhipu": "ZHIPU_BASE_URL",
+        "moonshot": "MOONSHOT_BASE_URL", "minimax": "MINIMAX_BASE_URL",
+        "mimo": "MIMO_BASE_URL", "zai": "ZAI_BASE_URL", "ollama": "OLLAMA_BASE_URL",
+    }
+    _base_env = _PROVIDER_MAP_PREVIEW.get((provider or "").lower(), "OPENAI_BASE_URL")
+    _base_val = os.getenv(_base_env, "") or os.getenv("OPENAI_BASE_URL", "")
+    print(f"[LLM DEBUG] dotenv from {_redact_env_source(loaded)} | provider={provider} model={model} base_env={_base_env} base={_redact_base_url_for_log(_base_val)}")
 
 
 def _normalize_ollama_base_url(base_url: str) -> str:
@@ -254,6 +261,10 @@ def _sync_provider_env() -> None:
         os.environ["OPENAI_API_BASE"] = base_url
         os.environ.setdefault("OPENAI_BASE_URL", base_url)
 
+    # Diagnostic: log the resolved provider config (API key is redacted)
+    _key_preview = f"{api_key[:4]}...{api_key[-4:]}" if len(api_key) > 8 else "(short/empty)"
+    print(f"[LLM DEBUG] provider={provider} key_env={key_env} api_key={_key_preview} base_env={base_env} base={_redact_base_url_for_log(base_url)}")
+
 
 def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any:
     """Construct a ChatOpenAI instance.
@@ -287,6 +298,11 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
 
     if ChatOpenAI is None:
         raise RuntimeError("langchain-openai is not installed")
+    # Diagnostic: log the final ChatOpenAI parameters
+    _final_key = os.getenv("OPENAI_API_KEY", "")
+    _final_base = os.getenv("OPENAI_API_BASE") or os.getenv("OPENAI_BASE_URL", "")
+    _fk_preview = f"{_final_key[:4]}...{_final_key[-4:]}" if len(_final_key) > 8 else "(empty)"
+    print(f"[LLM DEBUG] build_llm model={name} provider={provider} api_key={_fk_preview} base_url={_redact_base_url_for_log(_final_base)}")
     # MiniMax requires temperature in (0.0, 1.0] — clamp to 0.01 when the
     # default 0.0 is used to avoid an API validation error.
     if provider == "minimax" and temperature <= 0.0:

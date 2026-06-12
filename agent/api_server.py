@@ -3061,6 +3061,10 @@ async def stop_runner_endpoint(payload: LiveRunnerControlRequest):
 from src.api.alpha_routes import register_alpha_routes  # noqa: E402
 register_alpha_routes(app)
 
+# Screener routes (Web UI)
+from src.api.screener_routes import register_screener_routes  # noqa: E402
+register_screener_routes(app)
+
 
 # ============================================================================
 # Main Entry Point
