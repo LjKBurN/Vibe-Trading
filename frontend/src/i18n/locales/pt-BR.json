@@ -46,7 +46,8 @@
       "pixelOffice": "Planeje e atribua tarefas de pesquisa. A atribuição não inicia a execução; os cargos são rótulos e não concedem permissões de negociação.",
       "paperTrading": "Teste operações diárias com recursos fictícios. Nenhuma ordem é enviada à corretora. Os resultados excluem dividendos em dinheiro e não representam retorno total.",
       "researchArtifacts": "Salve e reutilize análises baseadas em evidências entre sessões.",
-      "researchLab": "Verifique custos, parâmetros fixados fora da amostra, fórmulas de fatores e evidências salvas."
+      "researchLab": "Verifique custos, parâmetros fixados fora da amostra, fórmulas de fatores e evidências salvas.",
+      "screener": "Filter A-share stocks by market cap, valuation and volume to find candidates."
     },
     "instructions": {
       "reports": "Primeiro peça ao assistente um backtest de uma estratégia e abra os resultados aqui. Baixe PDFs e documentos gerados no chat na conversa original.",
@@ -60,7 +61,8 @@
       "pixelOffice": "Planeje e atribua tarefas de pesquisa. A atribuição não inicia a execução; os cargos são rótulos e não concedem permissões de negociação.",
       "paperTrading": "Somente candles diários completos são liquidados. As estratégias leem dias anteriores e executam no fechamento do dia indicado. Aguarde 30 minutos após o fechamento regular; nenhuma execução automática é agendada.",
       "researchArtifacts": "Pesquise análises anteriores, abra qualquer revisão ou crie uma revisão vinculada com novas evidências. Conclusões antigas permanecem inalteradas.",
-      "researchLab": "Verifique custos, parâmetros fixados fora da amostra, fórmulas de fatores e evidências salvas."
+      "researchLab": "Verifique custos, parâmetros fixados fora da amostra, fórmulas de fatores e evidências salvas.",
+      "screener": "Filter A-share stocks by board, market cap, valuation and volume, then open a stock's factor or risk details to investigate further."
     }
   },
   "layout": {
@@ -94,7 +96,8 @@
     "pixelOffice": "Escritório pixel",
     "paperTrading": "Negociação simulada",
     "researchArtifacts": "Artefatos de pesquisa",
-    "researchLab": "Laboratório de pesquisa"
+    "researchLab": "Laboratório de pesquisa",
+    "screener": "Stock screener"
   },
   "researchArtifacts": {
     "compareTitle": "Comparação de revisões",
@@ -2881,5 +2884,55 @@
     "installing": "Baixando e verificando a atualização. O aplicativo reiniciará após a instalação.",
     "checkFailed": "Não foi possível verificar atualizações. Verifique a conexão ou o acesso ao servidor e tente novamente.",
     "installFailed": "Não foi possível iniciar a instalação. Seus dados foram mantidos. Verifique os logs e procure atualizações novamente."
+  },
+  "screener": {
+    "title": "Stock Screener",
+    "subtitle": "Filter A-share stocks by fundamental metrics",
+    "market": "Market Board",
+    "marketAll": "All Boards",
+    "marketMain": "Main Board",
+    "marketGem": "GEM (ChiNext)",
+    "marketStar": "STAR Market",
+    "marketBeijing": "Beijing SE",
+    "marketCapRange": "Market Cap (100M RMB)",
+    "marketCapMin": "Min Cap",
+    "marketCapMax": "Max Cap",
+    "peRange": "P/E Range",
+    "peMin": "Min PE",
+    "peMax": "Max PE",
+    "pbRange": "P/B Range",
+    "pbMin": "Min PB",
+    "pbMax": "Max PB",
+    "volumeMin": "Min Volume",
+    "excludeST": "Exclude ST stocks",
+    "sortBy": "Sort by",
+    "sortMarketCap": "Market Cap",
+    "sortPE": "P/E",
+    "sortPB": "P/B",
+    "sortVolume": "Volume",
+    "sortTurnoverRate": "Turnover",
+    "sortPctChange": "Change%",
+    "sortAsc": "Ascending",
+    "sortDesc": "Descending",
+    "runScreener": "Screen",
+    "screening": "Screening...",
+    "noResults": "No stocks match the current filters.",
+    "loadingStocks": "Loading stocks...",
+    "page": "Page {{page}} of {{total}}",
+    "prev": "Previous",
+    "next": "Next",
+    "stockCode": "Code",
+    "stockName": "Name",
+    "close": "Close",
+    "changePct": "Chg%",
+    "marketCap": "Mkt Cap",
+    "pe": "P/E",
+    "pb": "P/B",
+    "turnover": "Turnover",
+    "total": "{{count}} stocks found",
+    "resetFilters": "Reset"
+  },
+  "router": {
+    "loading": "Loading…"
   }
 }

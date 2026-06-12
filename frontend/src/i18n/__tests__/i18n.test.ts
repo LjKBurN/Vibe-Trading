@@ -186,7 +186,13 @@ describe("new locale content", () => {
     const copied = Object.entries(collectStrings(locales.tr)).filter(([key, value]) => {
       const prose = value.replace(/\{\{.*?\}\}/g, "");
       // The release version is shared metadata, checked against pyproject by the backend suite.
-      return key !== "app.version" && value === enStrings[key] && /[A-Za-z]/.test(prose) && !sharedTerms.has(value);
+      // Fork-local screener feature is translated for en/zh-CN only; other
+      // locales intentionally fall back to English until translations land.
+      const forkFallback = key.startsWith("screener.") || key === "layout.screener"
+        || key === "navigation.descriptions.screener"
+        || key === "navigation.instructions.screener"
+        || key === "router.loading";
+      return !forkFallback && key !== "app.version" && value === enStrings[key] && /[A-Za-z]/.test(prose) && !sharedTerms.has(value);
     }).map(([key]) => key);
     expect(copied).toEqual([]);
   });

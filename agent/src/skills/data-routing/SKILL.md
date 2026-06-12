@@ -102,6 +102,7 @@ per-source skill.
 | baostock | A-shares (free daily/min) | No | China network | data-routing |
 | tencent | A-shares, HK, US (never-banned) | No | Unrestricted | data-routing |
 | mootdx | A-shares (retired 2026-10: TDX servers stopped answering the client protocol; explicit `source="mootdx"` only) | No | China network | data-routing |
+| astock | A-shares (local fork: mootdx TCP + Tencent fundamentals fallback) | No | China network | a-stock-data |
 | futu | A/HK/US via OpenD gateway | Yes (OpenD running) | Local gateway | data-routing (runner-internal) |
 | mt5 | Forex & metals (your broker's MT5 feed) | Yes (running, logged-in MT5 terminal; optional `~/.vibe-trading/mt5.json`) | Local terminal (Windows) | data-routing (runner-internal) |
 | tickerall | Forex & metals (same broker MT5 feed, hosted) | Yes (`TICKERALL_API_KEY` + `TICKERALL_ACCOUNT_ID`; read-only) | Hosted API (any OS, no terminal) | data-routing (runner-internal; **explicit `source=tickerall` only**) |

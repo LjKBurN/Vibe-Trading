@@ -52,6 +52,10 @@ EXCLUDED_PUBLIC_SOURCES = {
     # (mootdx/mootdx#157) and upstream is dormant. The loader stays
     # registered for explicit use but is out of the default chain.
     "mootdx": "upstream TDX protocol dead since 2026-07 (mootdx/mootdx#157)",
+    # Fork-local A-share loader (mootdx TCP + Tencent fundamentals). It shares
+    # mootdx's dead TDX transport, so it is deliberately not canaried; use an
+    # explicit source="astock" request to probe it.
+    "astock": "fork-local mootdx TCP transport; explicit source='astock' only",
 }
 DEPENDENCIES = {
     "akshare": "akshare",

@@ -40,7 +40,8 @@
       "pixelOffice": "리서치 작업을 계획하고 배정합니다. 배정만으로 실행되지는 않으며, 직급은 거래 권한을 부여하지 않는 표시에 불과합니다.",
       "paperTrading": "가상 자금으로 일별 거래를 테스트합니다. 증권사에 주문을 보내지 않습니다. 현금 배당을 제외하므로 총수익이 아닙니다.",
       "researchArtifacts": "근거 기반 분석을 세션 간에 저장하고 재사용합니다.",
-      "researchLab": "거래 비용, 고정 매개변수의 표본 외 성과, 팩터 정의와 저장된 증거를 검증합니다."
+      "researchLab": "거래 비용, 고정 매개변수의 표본 외 성과, 팩터 정의와 저장된 증거를 검증합니다.",
+      "screener": "Filter A-share stocks by market cap, valuation and volume to find candidates."
     },
     "instructions": {
       "reports": "먼저 도우미에게 전략 백테스트를 요청한 후 여기에서 결과를 엽니다. 대화에서 생성한 PDF 등은 원래 대화에서 다운로드하세요.",
@@ -54,7 +55,8 @@
       "pixelOffice": "리서치 작업을 계획하고 배정합니다. 배정만으로 실행되지는 않으며, 직급은 거래 권한을 부여하지 않는 표시에 불과합니다.",
       "paperTrading": "완료된 일봉만 결산합니다. 전략은 이전 날짜의 데이터만 읽고 실행일 종가로 체결됩니다. 정규장 종료 후 30분을 기다리세요. 자동 실행은 예약되지 않습니다.",
       "researchArtifacts": "이전 분석을 검색하고,원하는 리비전을 열거나, 새 증거로 연결된 리비전을 만드세요. 이전 결론은 변경되지 않습니다.",
-      "researchLab": "거래 비용, 고정 매개변수의 표본 외 성과, 팩터 정의와 저장된 증거를 검증합니다."
+      "researchLab": "거래 비용, 고정 매개변수의 표본 외 성과, 팩터 정의와 저장된 증거를 검증합니다.",
+      "screener": "Filter A-share stocks by board, market cap, valuation and volume, then open a stock's factor or risk details to investigate further."
     }
   },
   "layout": {
@@ -88,7 +90,8 @@
     "pixelOffice": "픽셀 오피스",
     "paperTrading": "모의 거래",
     "researchArtifacts": "연구 산출물",
-    "researchLab": "리서치 실험실"
+    "researchLab": "리서치 실험실",
+    "screener": "Stock screener"
   },
   "researchArtifacts": {
     "compareTitle": "리비전 비교",
@@ -2881,5 +2884,55 @@
     "installing": "업데이트를 다운로드하고 검증하고 있습니다. 설치 후 앱이 다시 시작됩니다.",
     "checkFailed": "업데이트를 확인할 수 없습니다. 연결이나 서버 접근 권한을 확인하고 다시 시도하세요.",
     "installFailed": "설치 프로그램으로 넘기지 못했습니다. 데이터는 유지되었습니다. 로그를 확인하고 업데이트를 다시 확인하세요."
+  },
+  "screener": {
+    "title": "Stock Screener",
+    "subtitle": "Filter A-share stocks by fundamental metrics",
+    "market": "Market Board",
+    "marketAll": "All Boards",
+    "marketMain": "Main Board",
+    "marketGem": "GEM (ChiNext)",
+    "marketStar": "STAR Market",
+    "marketBeijing": "Beijing SE",
+    "marketCapRange": "Market Cap (100M RMB)",
+    "marketCapMin": "Min Cap",
+    "marketCapMax": "Max Cap",
+    "peRange": "P/E Range",
+    "peMin": "Min PE",
+    "peMax": "Max PE",
+    "pbRange": "P/B Range",
+    "pbMin": "Min PB",
+    "pbMax": "Max PB",
+    "volumeMin": "Min Volume",
+    "excludeST": "Exclude ST stocks",
+    "sortBy": "Sort by",
+    "sortMarketCap": "Market Cap",
+    "sortPE": "P/E",
+    "sortPB": "P/B",
+    "sortVolume": "Volume",
+    "sortTurnoverRate": "Turnover",
+    "sortPctChange": "Change%",
+    "sortAsc": "Ascending",
+    "sortDesc": "Descending",
+    "runScreener": "Screen",
+    "screening": "Screening...",
+    "noResults": "No stocks match the current filters.",
+    "loadingStocks": "Loading stocks...",
+    "page": "Page {{page}} of {{total}}",
+    "prev": "Previous",
+    "next": "Next",
+    "stockCode": "Code",
+    "stockName": "Name",
+    "close": "Close",
+    "changePct": "Chg%",
+    "marketCap": "Mkt Cap",
+    "pe": "P/E",
+    "pb": "P/B",
+    "turnover": "Turnover",
+    "total": "{{count}} stocks found",
+    "resetFilters": "Reset"
+  },
+  "router": {
+    "loading": "Loading…"
   }
 }

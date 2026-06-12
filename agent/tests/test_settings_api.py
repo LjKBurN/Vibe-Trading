@@ -796,7 +796,7 @@ def test_update_source_orders_persists_and_hot_applies(
                     "market": "a_share",
                     "order": [
                         "tushare", "tencent", "eastmoney",
-                        "baostock", "yahoo", "akshare", "local",
+                        "baostock", "yahoo", "akshare", "astock", "local",
                     ],
                 },
             ],
@@ -835,7 +835,7 @@ def test_update_source_orders_reset_clears_override(
                     "market": "a_share",
                     "order": [
                         "tushare", "tencent", "eastmoney",
-                        "baostock", "yahoo", "akshare", "local",
+                        "baostock", "yahoo", "akshare", "astock", "local",
                     ],
                 },
             ],

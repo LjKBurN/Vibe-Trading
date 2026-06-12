@@ -258,7 +258,7 @@ class TestDetectSource:
     @pytest.mark.parametrize(
         "code, expected_source",
         [
-            ("000001.SZ", "tushare"),
+            ("000001.SZ", "astock"),
             ("AAPL.US", "yfinance"),
             ("0700.HK", "yfinance"),
             ("RELIANCE.NS", "yahoo"),
@@ -303,7 +303,7 @@ class TestGroupCodes:
     def test_group_by_source(self) -> None:
         codes = ["000001.SZ", "AAPL.US"]
         groups = _group_codes_by_source(codes)
-        assert "tushare" in groups
+        assert "astock" in groups
         assert "yfinance" in groups
 
 

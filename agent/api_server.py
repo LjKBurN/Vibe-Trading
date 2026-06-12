@@ -347,6 +347,10 @@ from src.api.scheduled_routes import (  # noqa: E402, F401
     _scheduled_research_scheduler_enabled,
 )
 
+# Screener routes (Web UI)
+from src.api.screener_routes import register_screener_routes  # noqa: E402
+register_screener_routes(app)
+
 
 # ============================================================================
 # Main Entry Point

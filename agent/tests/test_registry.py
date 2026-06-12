@@ -238,6 +238,7 @@ class TestFallbackChains:
         """mootdx left the default a_share chain (#1729: TDX servers stopped
         answering the mootdx/tdxpy protocol, upstream dormant), but the loader
         stays registered so explicit source="mootdx" keeps working."""
+        _ensure_registered()
         assert "mootdx" not in FALLBACK_CHAINS["a_share"]
         assert "mootdx" in LOADER_REGISTRY
         # An override naming it is no longer a permutation of the default.
@@ -259,6 +260,8 @@ class TestFallbackChains:
             "baostock",
             "yahoo",
             "akshare",
+            # Fork-local astock fallback (mootdx TCP + Tencent fundamentals).
+            "astock",
             "tushare",
             "local",
         ]

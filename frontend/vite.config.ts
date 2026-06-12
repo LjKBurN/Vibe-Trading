@@ -55,6 +55,7 @@ export default defineConfig(({ mode }) => {
         // Overrides the plain PROXY_PATHS entry above.
         "/options": apiProxyWithHtmlFallback,
         "^/alpha(?:/|$)": apiProxy,
+        "^/screener(?:/|$)": apiProxy,
       },
     },
     build: {

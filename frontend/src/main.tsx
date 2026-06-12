@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { router } from "./router";
+import "./i18n";
 import "highlight.js/styles/github-dark-dimmed.min.css";
 import "./index.css";
 

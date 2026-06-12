@@ -40,7 +40,8 @@
       "pixelOffice": "规划和分配研究任务。分配任务不会启动执行；职级只是标签，不授予交易权限。",
       "paperTrading": "使用模拟资金测试每日交易，不向券商发送订单。结果不含现金分红，不代表总回报。",
       "researchArtifacts": "跨会话保存并复用有证据支持的分析。",
-      "researchLab": "检验交易成本、锁定参数的样本外表现、因子定义和已保存的研究证据。"
+      "researchLab": "检验交易成本、锁定参数的样本外表现、因子定义和已保存的研究证据。",
+      "screener": "按市值、估值与成交量筛选 A 股标的。"
     },
     "instructions": {
       "reports": "先在研究助手中描述策略并完成回测，再到这里打开结果。聊天生成的 PDF 等文档在原对话中下载。",
@@ -54,7 +55,8 @@
       "pixelOffice": "规划和分配研究任务。分配任务不会启动执行；职级只是标签，不授予交易权限。",
       "paperTrading": "仅结算已完成的日线。策略只读取此前数据，在执行日收盘价成交。请等正常收市后 30 分钟；不会自动安排后台执行。",
       "researchArtifacts": "搜索历史分析，展开任意修订，或添加新证据创建关联修订。旧结论保持不变。",
-      "researchLab": "检验交易成本、锁定参数的样本外表现、因子定义和已保存的研究证据。"
+      "researchLab": "检验交易成本、锁定参数的样本外表现、因子定义和已保存的研究证据。",
+      "screener": "按板块、市值、估值与成交量筛选 A 股，再深入查看个股的因子或风险详情。"
     }
   },
   "layout": {
@@ -88,7 +90,8 @@
     "pixelOffice": "像素办公室",
     "paperTrading": "模拟交易",
     "researchArtifacts": "研究资料",
-    "researchLab": "研究实验室"
+    "researchLab": "研究实验室",
+    "screener": "股票筛选"
   },
   "researchArtifacts": {
     "compareTitle": "修订比较",
@@ -2881,5 +2884,55 @@
     "installing": "正在下载并验证更新，安装后应用将重新启动。",
     "checkFailed": "无法检查更新，请检查网络或服务访问权限后重试。",
     "installFailed": "更新未能交接给安装程序，数据已保留。请检查桌面日志，然后重新检查更新。"
+  },
+  "screener": {
+    "title": "选股",
+    "subtitle": "按基本面指标筛选 A 股",
+    "market": "市场板块",
+    "marketAll": "全部板块",
+    "marketMain": "主板",
+    "marketGem": "创业板",
+    "marketStar": "科创板",
+    "marketBeijing": "北交所",
+    "marketCapRange": "市值范围（亿元）",
+    "marketCapMin": "最小市值",
+    "marketCapMax": "最大市值",
+    "peRange": "市盈率范围",
+    "peMin": "最小 PE",
+    "peMax": "最大 PE",
+    "pbRange": "市净率范围",
+    "pbMin": "最小 PB",
+    "pbMax": "最大 PB",
+    "volumeMin": "最小成交量",
+    "excludeST": "排除 ST 股票",
+    "sortBy": "排序",
+    "sortMarketCap": "市值",
+    "sortPE": "PE",
+    "sortPB": "PB",
+    "sortVolume": "成交量",
+    "sortTurnoverRate": "换手率",
+    "sortPctChange": "涨跌幅",
+    "sortAsc": "升序",
+    "sortDesc": "降序",
+    "runScreener": "筛选",
+    "screening": "筛选中...",
+    "noResults": "没有股票匹配当前筛选条件。",
+    "loadingStocks": "加载中...",
+    "page": "第 {{page}} 页 / 共 {{total}} 页",
+    "prev": "上一页",
+    "next": "下一页",
+    "stockCode": "代码",
+    "stockName": "名称",
+    "close": "收盘价",
+    "changePct": "涨跌幅",
+    "marketCap": "市值(亿)",
+    "pe": "PE",
+    "pb": "PB",
+    "turnover": "换手率",
+    "total": "共 {{count}} 只股票",
+    "resetFilters": "重置"
+  },
+  "router": {
+    "loading": "加载中…"
   }
 }

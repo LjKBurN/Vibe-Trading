@@ -877,7 +877,7 @@ def _validate_signal_engine_class(engine_cls) -> None:
 
 # Back-compat: market type -> legacy source name (for engine selection & metrics)
 _MARKET_TO_SOURCE = {
-    "a_share": "tushare",
+    "a_share": "astock",
     "us_equity": "yfinance",
     "hk_equity": "yfinance",
     "india_equity": "yahoo",

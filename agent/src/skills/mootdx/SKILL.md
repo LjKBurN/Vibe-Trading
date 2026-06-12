@@ -76,7 +76,7 @@ intraday = loader.fetch(["600519.SH"], "2026-11-12", "2026-11-13", interval="15m
 
 ## Built-in Loader
 
-`backtest/loaders/mootdx_loader.py` remains registered for explicit `source="mootdx"` calls. It is not in the automatic `a_share` fallback chain. The default chain is `tencent → eastmoney → baostock → yahoo → akshare → tushare → local`, with unavailable loaders skipped. Tencent and AKShare ship in the base install; BaoStock requires the optional `vibe-trading-ai[ashare]` extra. Neither the base install nor that extra includes mootdx.
+`backtest/loaders/mootdx_loader.py` remains registered for explicit `source="mootdx"` calls. It is not in the automatic `a_share` fallback chain. The default chain is `tencent → eastmoney → baostock → yahoo → akshare → astock → tushare → local`, with unavailable loaders skipped. Tencent and AKShare ship in the base install; BaoStock requires the optional `vibe-trading-ai[ashare]` extra. Neither the base install nor that extra includes mootdx.
 
 ```python
 from backtest.runner import run

@@ -63,6 +63,7 @@ VALID_SOURCES: set[str] = {
     "b3_cotahist",
     "local",
     "auto",
+    "astock",
 }
 
 
@@ -107,6 +108,7 @@ def _ensure_registered() -> None:
             "backtest.loaders.binance_loader",
             "backtest.loaders.yfinance_loader",
             "backtest.loaders.akshare_loader",
+            "backtest.loaders.astock_loader",
             "backtest.loaders.baostock_loader",
             "backtest.loaders.tencent_loader",
             "backtest.loaders.mootdx_loader",
@@ -191,6 +193,10 @@ FALLBACK_CHAINS: dict[str, list[str]] = {
         "baostock",
         "yahoo",
         "akshare",
+        # Local fork: astock (mootdx TCP + Tencent) as an A-share fallback.
+        # Kept behind the healthy default sources because upstream
+        # retired mootdx from the default chain on 2026-10-08.
+        "astock",
         "tushare",
         "local",
     ],
@@ -571,8 +577,14 @@ def refresh_source_order_overrides() -> None:
             order.remove("gildata")
         # Migrate a complete pre-Yahoo mainland ordering without discarding
         # the user's relative priorities. Arbitrary missing sources still fail.
-        if market == "a_share" and sorted(order) == sorted(s for s in default if s != "yahoo"):
-            order.insert(order.index("local"), "yahoo")
+        # The fork-local ``astock`` fallback post-dates those saved orders too,
+        # so it is re-inserted alongside ``yahoo`` rather than rejecting the
+        # user's whole ordering for a source they never knew about.
+        if market == "a_share":
+            backfilled = {"yahoo", "astock"}
+            if sorted(order) == sorted(s for s in default if s not in backfilled):
+                at = order.index("local")
+                order[at:at] = [s for s in default if s in backfilled]
         if order and is_valid_source_order(market, order):
             FALLBACK_CHAINS[market] = order[:]
             _ACTIVE_SOURCE_ORDER_OVERRIDES[market] = order[:]

@@ -1687,6 +1687,10 @@ def _redact_proxy_url(name: str, raw: str | None) -> str:
         return "set"
     return _redact_base_url_for_log(raw)
 
+    # Diagnostic: log the resolved provider config (API key is redacted)
+    _key_preview = f"{api_key[:4]}...{api_key[-4:]}" if len(api_key) > 8 else "(short/empty)"
+    print(f"[LLM DEBUG] provider={provider} key_env={key_env} api_key={_key_preview} base_env={base_env} base={_redact_base_url_for_log(base_url)}")
+
 
 def provider_diagnostics() -> dict[str, Any]:
     """Build a redacted provider diagnostic snapshot.
